@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	<title>Application Template</title>
+
+	<!-- Browser favicon -->
+	<link rel="shortcut icon" th:href="@{images/favicon.png}" href="images/favicon.png">
+	<!-- Add to homescreen for Chrome on Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="icon" sizes="192x192" th:href="@{images/android-desktop.png}" href="images/android-desktop.png">
+	<!-- Add to homescreen for Safari on iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Material Design Lite">
+	<link rel="apple-touch-icon-precomposed" th:href="@{images/ios-desktop.png}" href="images/ios-desktop.png">
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" th:href="@{css/material.min.css}" href="../static/css/material.min.css">
+	<link rel="stylesheet" th:href="@{css/styles.css}" href="../static/css/styles.css">
+	<script lang="javascript" th:src="@{scripts/jquery-3.4.1.min.js}" src="../static/scripts/jquery-3.4.1.min.js"></script>
+	<script lang="javascript" th:src="@{scripts/material.min.js}" src="../static/scripts/material.min.js"></script>
+	<script lang="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+
+</head>
+<body>
+<div class="layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+	<!-- region Header and drawer -->
+	<header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+		<div class="mdl-layout__header-row toolbar">
+			<span class="mdl-layout-title">Application Name - <span>Home</span></span>
+			<div class="mdl-layout-spacer"></div>
+
+			<button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+				<i class="material-icons">more_vert</i>
+			</button>
+			<ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+				<li class="mdl-menu__item">Informazioni</li>
+				<li class="mdl-menu__item">Contatti</li>
+				<li class="mdl-menu__item">Informazioni legali</li>
+			</ul>
+		</div>
+	</header>
+	<div class="drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+		<header class="drawer-header">
+			<img th:src="@{images/logo.png}" src="../static/images/logo.png" class="avatar" alt="Application Name">
+			<div class="avatar-dropdown">
+				<div>
+					<div class="avatar-title">Kento Tate</div>
+					<div class="avatar-subtitle">pilota del robot Daltanious</div>
+					<div class="avatar-subtitle">Administrator</div>
+				</div>
+				<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+					<i class="material-icons" role="presentation">arrow_drop_down</i>
+				</button>
+				<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+					<li class="mdl-menu__item">Disconnetti</li>
+				</ul>
+			</div>
+		</header>
+		<nav class="navigation mdl-navigation mdl-color--grey-100">
+			<a class="mdl-navigation__link" href=""><i class="mdl-color-text--red-500 material-icons" role="presentation">home</i>Home</a>
+			<a class="mdl-navigation__link" href=""><i class="mdl-color-text--red-500 material-icons" role="presentation">build</i>Sezione 1</a>
+			<a class="mdl-navigation__link" href=""><i class="mdl-color-text--red-500 material-icons" role="presentation">phone_callback</i>Sezione 2</a>
+			<a class="mdl-navigation__link" href=""><i class="mdl-color-text--red-500 material-icons" role="presentation">analytics</i>Sezione 3</a>
+
+			<div class="mdl-layout-spacer"></div>
+			<!--<a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span
+					class="visuallyhidden">Help</span></a>-->
+		</nav>
+	</div>
+	<!-- endregion -->
+
+	<main class="mdl-layout__content mdl-color--grey-100">
+		<div class="mdl-grid">
+
+			<div class="mdl-cell mdl-cell--4-col">
+				<script>
+					getdata('data-sample-1', '/api/sample-1');
+                    getdata('data-sample-2', '/api/sample-2');
+                    getdata('data-sample-3', '/api/error');
+					function getdata(card, api) {
+
+                        $.ajax({
+                            method: 'GET',
+                            url: api,
+                            success: function (result) {
+                                const graph = $("#" + card + " .graph-1-col");
+                                drawBarChart(graph, result.title, result.data);
+                                $("#" + card + " .skeleton-main-content").hide();
+                                $("#" + card + " .supporting-text-container").html(result.description);
+                                $("#" + card + " .filtra").removeClass("skeleton-line-short").html("FILTRA")
+                                $("#" + card + " .visualizza").removeClass("skeleton-line-short").html("VISUALIZZA")
+                                graph.show();
+                            },
+                            error: function (e) {
+                                console.log(e);
+                                $("#" + card + " .skeleton-main-content").hide();
+                                $("#" + card + " .mdl-card__title").html(e.responseJSON.status + " " + e.responseJSON.error + "<br/>" + e.responseJSON.message);
+                                $("#" + card + " .supporting-text-container").hide();
+                                $("#" + card + " .filtra").hide();
+                                $("#" + card + " .visualizza").removeClass("skeleton-line-short").html("RIPROVA")
+                            }
+                        });
+                    }
+
+				</script>
+				<div id="data-sample-1" class="data-card mdl-card mdl-shadow--2dp">
+					<div class="mdl-card__title">
+						<div class="skeleton-main-content"></div>
+						<canvas class="graph-1-col"></canvas>
+					</div>
+					<div class="mdl-card__supporting-text">
+						<div class="supporting-text-container"><div class="skeleton-line-long"></div></div>
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a class="filtra mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect skeleton-line-short"></a>
+						<a class="visualizza mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect skeleton-line-short"></a>
+					</div>
+				</div>
+			</div>
+			<div class="mdl-cell mdl-cell--4-col">
+				<div id="data-sample-2" class="data-card mdl-card mdl-shadow--2dp">
+					<div class="mdl-card__title">
+						<div class="skeleton-main-content"></div>
+						<canvas class="graph-1-col"></canvas>
+					</div>
+					<div class="mdl-card__supporting-text">
+						<div class="supporting-text-container"><div class="skeleton-line-long"></div></div>
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a class="filtra mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect skeleton-line-short"></a>
+						<a class="visualizza mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect skeleton-line-short"></a>
+					</div>
+				</div>
+			</div>
+			<div class="mdl-cell mdl-cell--4-col">
+				<div id="data-sample-3" class="data-card mdl-card mdl-shadow--2dp">
+					<div class="mdl-card__title">
+						<div class="skeleton-main-content"></div>
+						<canvas class="graph-1-col"></canvas>
+					</div>
+					<div class="mdl-card__supporting-text">
+						<div class="supporting-text-container"><div class="skeleton-line-long"></div></div>
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a class="filtra mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect skeleton-line-short"></a>
+						<a class="visualizza mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect skeleton-line-short"></a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mdl-cell mdl-cell--8-col">
+				<div class="data-card mdl-card mdl-shadow--2dp">
+					<div class="mdl-card__title">
+						<img src="https://via.placeholder.com/960x400" alt="demo"/>
+					</div>
+					<div class="mdl-card__supporting-text">
+						<div class="supporting-text-container">
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						</div>
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">action</a>
+						<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">action</a>
+					</div>
+				</div>
+			</div>
+			<div class="mdl-cell mdl-cell--4-col">
+				<div class="data-card mdl-card mdl-shadow--2dp">
+					<div class="mdl-card__title">
+						<img src="https://via.placeholder.com/480x400" alt="demo"/>
+					</div>
+					<div class="mdl-card__supporting-text">
+						<div class="supporting-text-container">
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						</div>
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">action</a>
+						<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">action</a>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</main>
+
+</div>
+
+<script>
+    function drawBarChart(canvas, title, json) {
+        // noinspection JSUnresolvedFunction
+        new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(json),
+                datasets: [{
+                    backgroundColor: [
+                        '#40ff00',
+                        '#cc00ff',
+                        '#ff3333',
+                        '#ffff00',
+                        '#6600ff'
+                    ],
+                    data: Object.keys(json).map(function(item) { return json[item]; })
+                }]
+            },
+            options: {
+                responsive:true,
+                maintainAspectRatio:false,
+                animation: false,
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    fontSize: 20,
+                    text: title
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0, // minimum value
+							max: 20
+                        }
+                    }]
+                },
+                //showAllTooltips: true /* decommentare per rendere fissi i tooltips */
+            }
+        });
+    }
+</script>
+
+
+
+
+</body>
+</html>

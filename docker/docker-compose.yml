@@ -1,0 +1,28 @@
+version: "3"
+services:
+    application-web:
+        image: application-name:v2020.1
+        restart: always
+        container_name: application-frontend
+        command: "java -jar ./application-name.jar"
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            - application-database
+
+    application-database:
+        image: mcr.microsoft.com/mssql/server:latest
+        restart: always
+        container_name: application-backend
+        env_file:
+            - database.env
+            # il file .env contiene i seguenti parametri:
+            # MSSQL_SA_PASSWORD=[inserire la password per sa]
+        environment:
+            - ACCEPT_EULA=Y
+        ports:
+            - 1432:1433
